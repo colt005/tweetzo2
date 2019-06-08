@@ -7,6 +7,7 @@ import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 import '../Keys/secrets.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:flutter_share_me/flutter_share_me.dart';
+import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
 
 String trendUrl = "/trends/place.json?id=";
 
@@ -79,37 +80,41 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
             new Expanded(
-              child: new ListView.builder(
-                itemCount: trenddata == null ? 0 : trenddata.length,
-                itemBuilder: (BuildContext context, int index) {
-                  // title: Text(
-                  //       "#${trenddata[index]['name'].toString().replaceAll(RegExp("#"), '')}",
-                  //       style: TextStyle(fontSize: 15.0),
-                  //     )
-                  return Card(
-                    child: ListTile(
-                      title: Text(
-                        "#${trenddata[index]['name'].toString().replaceAll(RegExp("#"), '')}",
-                        style: TextStyle(fontSize: 15.0),
-                      ),
-                      trailing: GestureDetector(
-                        onTap: () async {
-                          var response = await FlutterShareMe().shareToSystem(
-                              msg: trenddata[index]['url']); //share to system
-                          if (response == 'success') {
-                            print('navigate success');
-                          }
+              child:  LiquidPullToRefresh(
+                              child: ListView.builder(
+                  itemCount: trenddata == null ? 0 : trenddata.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    // title: Text(
+                    //       "#${trenddata[index]['name'].toString().replaceAll(RegExp("#"), '')}",
+                    //       style: TextStyle(fontSize: 15.0),
+                    //     )
+                    return Card(
+                      child: ListTile(
+                        title: Text(
+                          "#${trenddata[index]['name'].toString().replaceAll(RegExp("#"), '')}",
+                          style: TextStyle(fontSize: 15.0),
+                        ),
+                        trailing: GestureDetector(
+                          onTap: () async {
+                            var response = await FlutterShareMe().shareToSystem(
+                                msg: trenddata[index]['url']); //share to system
+                            if (response == 'success') {
+                              print('navigate success');
+                            }
+                          },
+                          child: Icon(Icons.share),
+                        ),
+                        subtitle: Text("${trenddata[index]['tweet_volume']}"),
+                        onLongPress: () {
+                          _showAlertDialog(
+                              "${trenddata[index]['name'].toString()}",
+                              trenddata[index]['url']);
                         },
-                        child: Icon(Icons.share),
                       ),
-                      subtitle: Text("${trenddata[index]['tweet_volume']}"),
-                      onLongPress: () {
-                        _showAlertDialog(
-                            "${trenddata[index]['name'].toString()}",
-                            trenddata[index]['url']);
-                      },
-                    ),
-                  );
+                    );
+                  },
+                ), onRefresh: () async {
+                  await getLocation();
                 },
               ),
             )
@@ -144,7 +149,7 @@ class _HomePageState extends State<HomePage> {
     debugPrint(position.toString());
     userLongitude = position.longitude.toString();
     userLattitude = position.latitude.toString();
-    await initWoeid();
+    initWoeid();
     whoeid = await getwoeid();
     await getData();
     // tryonr();
