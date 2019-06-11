@@ -59,6 +59,17 @@ class TweetPage extends StatefulWidget{
   @override
   Widget build(BuildContext context) {
     
+
+    if(tweetStatus == null){
+      return MaterialApp(
+        home: Scaffold(
+          body: Container(
+            child: Center(child: CircularProgressIndicator()),
+          ),
+        ),
+      ); 
+    }
+    else{
     return Container(
       child: ListView.builder(
         itemCount: tweetStatus.length,
@@ -76,6 +87,7 @@ class TweetPage extends StatefulWidget{
       )
     );
 }
+  }
 
     }
 
