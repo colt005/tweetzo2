@@ -18,12 +18,17 @@ class WebPage extends StatefulWidget {
 class _WebPageState extends State<WebPage> {
   @override
   Widget build(BuildContext context) {
-    return WebviewScaffold(
-      url: widget.url,
-      appBar: AppBar(
-        title: Text("#${widget.list[widget.index]['name'].toString().replaceAll(RegExp("#"), '')}"),
+    return Container(
+      child: WebviewScaffold(
+        url: "${widget.url} filter:verified filter:news",
+        resizeToAvoidBottomInset: true,
+        withZoom: true,
+        withJavascript: true,
+        appBar: AppBar(
+          title: Text("#${widget.list[widget.index]['name'].toString().replaceAll(RegExp("#"), '')}"),
+        ),
+        
       ),
-      
     );
   }
 }

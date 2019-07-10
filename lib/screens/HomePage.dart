@@ -97,7 +97,7 @@ class _HomePageState extends State<HomePage> {
                       builder:
                           (BuildContext context, AsyncSnapshot<String> text) {
                         return Container(
-                          margin: const EdgeInsets.only(bottom:12.0),
+                          margin: const EdgeInsets.only(bottom: 12.0),
                           constraints: new BoxConstraints.expand(
                             height: 200.0,
                           ),
@@ -114,11 +114,10 @@ class _HomePageState extends State<HomePage> {
                             child: ListTile(
                               title: Text(
                                 "#${trenddata[index]['name'].toString().replaceAll(RegExp("#"), '')}",
-                                style: TextStyle(fontSize: 20.0,
-                                fontWeight: FontWeight.w700,
-                                
-                              ),
-                                
+                                style: TextStyle(
+                                  fontSize: 20.0,
+                                  fontWeight: FontWeight.w700,
+                                ),
                               ),
                               trailing: GestureDetector(
                                 onTap: () async {
@@ -134,9 +133,14 @@ class _HomePageState extends State<HomePage> {
                               ),
                               subtitle:
                                   Text("${trenddata[index]['tweet_volume']}"),
-                                  onTap: (){
-                                    WebPage(list: trenddata,index: index,url: trenddata[index]['url']);
-                                  },
+                              onTap: () {
+                                Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (BuildContext context) => WebPage(
+                                      list: trenddata,
+                                      index: index,
+                                      url: trenddata[index]['url']),
+                                ));
+                              },
                               onLongPress: () {
                                 _showAlertDialog(
                                     "${trenddata[index]['name'].toString()}",
@@ -168,12 +172,10 @@ class _HomePageState extends State<HomePage> {
   AlertDialog _showAlertDialog(String title, String url) {
     AlertDialog alertDialog = AlertDialog(
       backgroundColor: Theme.of(context).primaryColorDark,
-      
       title: AppBar(title: Text(title)),
       content: SizedBox(
         width: 400.0,
         height: 500.0,
-        
         child: WebviewScaffold(
           resizeToAvoidBottomInset: true,
           withZoom: true,
