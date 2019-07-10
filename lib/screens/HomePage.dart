@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:async';
@@ -8,6 +10,9 @@ import '../Keys/secrets.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:flutter_share_me/flutter_share_me.dart';
 import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+
+import 'WebPage.dart';
 
 String trendUrl = "/trends/place.json?id=";
 
@@ -68,7 +73,6 @@ class _HomePageState extends State<HomePage> {
       );
     } else {
       return Container(
-        
         child: Scaffold(
             body: new Column(
           children: <Widget>[
@@ -80,40 +84,76 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
             new Expanded(
-              child:  LiquidPullToRefresh(
-                              child: ListView.builder(
+              child: LiquidPullToRefresh(
+                showChildOpacityTransition: false,
+                child: ListView.builder(
                   itemCount: trenddata == null ? 0 : trenddata.length,
                   itemBuilder: (BuildContext context, int index) {
                     // title: Text(
                     //       "#${trenddata[index]['name'].toString().replaceAll(RegExp("#"), '')}",
                     //       style: TextStyle(fontSize: 15.0),
                     //     )
-                    return Card(
-                      child: ListTile(
-                        title: Text(
-                          "#${trenddata[index]['name'].toString().replaceAll(RegExp("#"), '')}",
-                          style: TextStyle(fontSize: 15.0),
-                        ),
-                        trailing: GestureDetector(
-                          onTap: () async {
-                            var response = await FlutterShareMe().shareToSystem(
-                                msg: trenddata[index]['url']); //share to system
-                            if (response == 'success') {
-                              print('navigate success');
-                            }
-                          },
-                          child: Icon(Icons.share),
-                        ),
-                        subtitle: Text("${trenddata[index]['tweet_volume']}"),
-                        onLongPress: () {
-                          _showAlertDialog(
-                              "${trenddata[index]['name'].toString()}",
-                              trenddata[index]['url']);
-                        },
-                      ),
+                    return FutureBuilder(
+                      builder:
+                          (BuildContext context, AsyncSnapshot<String> text) {
+                        return Container(
+                          margin: const EdgeInsets.only(bottom:12.0),
+                          constraints: new BoxConstraints.expand(
+                            height: 200.0,
+                          ),
+                          alignment: Alignment.bottomLeft,
+                          decoration: BoxDecoration(
+                              image: DecorationImage(
+                                  image: text.data != null
+                                      ? CachedNetworkImageProvider(text.data)
+                                      : CachedNetworkImageProvider(
+                                          'http://www.allwhitebackground.com/images/2/2270.jpg'),
+                                  fit: BoxFit.cover)),
+                          child: Container(
+                            color: Theme.of(context).accentColor,
+                            child: ListTile(
+                              title: Text(
+                                "#${trenddata[index]['name'].toString().replaceAll(RegExp("#"), '')}",
+                                style: TextStyle(fontSize: 20.0,
+                                fontWeight: FontWeight.w700,
+                                
+                              ),
+                                
+                              ),
+                              trailing: GestureDetector(
+                                onTap: () async {
+                                  var response = await FlutterShareMe()
+                                      .shareToSystem(
+                                          msg: trenddata[index]
+                                              ['url']); //share to system
+                                  if (response == 'success') {
+                                    print('navigate success');
+                                  }
+                                },
+                                child: Icon(Icons.share),
+                              ),
+                              subtitle:
+                                  Text("${trenddata[index]['tweet_volume']}"),
+                                  onTap: (){
+                                    WebPage(list: trenddata,index: index,url: trenddata[index]['url']);
+                                  },
+                              onLongPress: () {
+                                _showAlertDialog(
+                                    "${trenddata[index]['name'].toString()}",
+                                    trenddata[index]['url']);
+                              },
+                            ),
+                          ),
+                        );
+                      },
+                      future: getImage(
+                          "${trenddata[index]['name'].toString().replaceAll(RegExp("#"), '')}"),
+                      initialData:
+                          'http://www.allwhitebackground.com/images/2/2270.jpg',
                     );
                   },
-                ), onRefresh: () async {
+                ),
+                onRefresh: () async {
                   await getLocation();
                 },
               ),
@@ -127,10 +167,13 @@ class _HomePageState extends State<HomePage> {
   // method to show alert dialog with webview on lonng press of List item
   AlertDialog _showAlertDialog(String title, String url) {
     AlertDialog alertDialog = AlertDialog(
+      backgroundColor: Theme.of(context).primaryColorDark,
+      
       title: AppBar(title: Text(title)),
       content: SizedBox(
         width: 400.0,
         height: 500.0,
+        
         child: WebviewScaffold(
           resizeToAvoidBottomInset: true,
           withZoom: true,
@@ -152,6 +195,7 @@ class _HomePageState extends State<HomePage> {
     initWoeid();
     whoeid = await getwoeid();
     await getData();
+
     // tryonr();
   }
 
@@ -203,5 +247,29 @@ class _HomePageState extends State<HomePage> {
       //debugPrint(qdata.toString());
 
     }
+  }
+}
+
+Future<String> getImage(String imageTerm) async {
+  //var uri = Uri.parse('https://api.cognitive.microsoft.com/bing/v7.0/images/search?q=$imageTerm&count=10');
+// var request = new http.Request("GET", uri)..headers['Ocp-Apim-Subscription-Key'] = "f03e02708d8740719c4f0b3b21dcf018";
+  var response = await http.get(
+      'https://api.cognitive.microsoft.com/bing/v7.0/images/search?q=$imageTerm&count=10',
+      headers: {
+        "Ocp-Apim-Subscription-Key": "f03e02708d8740719c4f0b3b21dcf018"
+      });
+// Map NewsData = json.decode(response.body) as Map;
+  Map data = json.decode(response.body) as Map;
+//List value = List.from(data['value']);
+  List value = data['value'];
+  String image = value[0]['contentUrl'];
+  // debugPrint(image);
+//  var response = await request.body;
+//  debugPrint(json.decode(response.toString()));
+  String defa = 'http://www.allwhitebackground.com/images/2/2270.jpg';
+  if (value.isEmpty) {
+    return defa;
+  } else {
+    return image;
   }
 }

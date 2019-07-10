@@ -12,7 +12,7 @@ import 'package:flutter_share_me/flutter_share_me.dart';
 import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
 
 String SearchUrl = "/search/tweets.json?q=";
-String SearchQuery = 'filter%3Averified%20filter%3Anews&geocode=$userLattitude,$userLongitude,300km&result_type=mixed&include_entities=true&lang=en';  //filter%3Averified%20filter%3Anews
+String SearchQuery = 'filter%3Averified%20filter%3Anews&geocode=$userLattitude,$userLongitude,300km&include_entities=true&lang=en';  //filter%3Averified%20filter%3Anews
 String SearchLat = "";
 String SearchLong = "";
 String SearchRad = "";
@@ -21,6 +21,8 @@ String userLongitude;
 Map data;
 List tweetStatus;
 Map tweetUser;
+// Pixabay API key 12901536-156cd75b50243be5eaccdfaac
+//Azure api key f03e02708d8740719c4f0b3b21dcf018
 
 
 class TweetPage extends StatefulWidget{

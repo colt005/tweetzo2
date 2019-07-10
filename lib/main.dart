@@ -3,7 +3,8 @@ import 'screens/HomePage.dart';
 import 'screens/TweetPage.dart';
 
 void main() {
-  runApp(MaterialApp(home: Tabs()));
+  runApp(MaterialApp(home: Tabs(),
+  debugShowCheckedModeBanner: false,));
 }
 
 class Tabs extends StatefulWidget {
@@ -32,7 +33,18 @@ class TabsState extends State<Tabs> with SingleTickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: darkThemeEnabled ? ThemeData.dark() : ThemeData.light(),
+      theme: darkThemeEnabled ? ThemeData(
+        brightness: Brightness.dark,
+        
+          accentColor: Colors.black54
+        
+      ) : ThemeData(
+          brightness: Brightness.light,
+          
+          primaryColor: Colors.blueAccent,
+        accentColor: Colors.white54
+      ),
+      
       home: Scaffold(
         appBar: AppBar(
           title: GestureDetector(
