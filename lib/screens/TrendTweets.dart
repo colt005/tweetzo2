@@ -4,6 +4,12 @@ import 'package:tweetzo/screens/HomePage.dart';
 import 'dart:convert';
 import 'package:twitter/twitter.dart';
 import '../Keys/secrets.dart';
+import 'package:flutter_linkify/flutter_linkify.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'WebPage.dart';
+import 'package:flutter_share_me/flutter_share_me.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 String SearchUrl = "/search/tweets.json?q=";
 String SearchQuery =
@@ -66,9 +72,40 @@ class TrendTweetsState extends State<TrendTweets> {
 
   @override
   Widget build(BuildContext context) {
-    if(tweetStatus!=null) {
+    // if(tweetStatus!=null) {
+    //   return WillPopScope(
+    //           child: Scaffold(
+    //       appBar: AppBar(
+    //         title: Text("#${widget.mainQuery}"),
+    //       ),
+    //       body: Container(
+    //           child: ListView.builder(
+    //         itemCount: tweetStatus.length,
+    //         itemBuilder: (BuildContext context, int index) {
+    //           return Card(
+    //             child: ListTile(
+    //               subtitle: Linkify(
+    //                 text: tweetStatus[index]['text'],
+    //                 onOpen: (link){
+    //                   Navigator.of(context).push(MaterialPageRoute(
+    //                               builder: (BuildContext context) => WebPage(
+
+    //                                   url: link.toString()),
+    //                             ));
+    //                 },
+    //               ),
+    //               // Text(tweetStatus[index]['text'].toString()),
+    //               title: Text(tweetStatus[index]['user']['name']),
+    //             ),
+    //           );
+    //         },
+    //       )),
+    //     ), onWillPop: _willPopcallback,
+    //   );
+    // }
+    if (tweetStatus != null) {
       return WillPopScope(
-              child: Scaffold(
+        child: Scaffold(
           appBar: AppBar(
             title: Text("#${widget.mainQuery}"),
           ),
@@ -77,18 +114,169 @@ class TrendTweetsState extends State<TrendTweets> {
             itemCount: tweetStatus.length,
             itemBuilder: (BuildContext context, int index) {
               return Card(
-                child: ListTile(
-                  subtitle: Text(tweetStatus[index]['text'].toString()),
-                  title: Text(tweetStatus[index]['user']['name']),
+                elevation: 3.0,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.0)),
+                child: Column(
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.all(4.0),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: CircleAvatar(
+                                backgroundImage: NetworkImage(tweetStatus[index]
+                                    ['user']['profile_image_url']),
+                              )),
+                          Expanded(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: <Widget>[
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 4.0),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: <Widget>[
+                                      Expanded(
+                                        child: Container(
+                                            child: RichText(
+                                          text: TextSpan(children: [
+                                            TextSpan(
+                                              text: tweetStatus[index]['user']
+                                                  ['name'],
+                                              style: Theme.of(context).textTheme.title,
+                                            ),
+                                            TextSpan(
+                                                text: " " +
+                                                    tweetStatus[index]['user']
+                                                        ['screen_name'],
+                                                style: TextStyle(
+                                                    fontSize: 16.0,
+                                                    color: Colors.grey)),
+                                          ]),
+                                          overflow: TextOverflow.ellipsis,
+                                        )),
+                                        flex: 5,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Padding(
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 4.0),
+                                  child: Linkify(
+                                    text: tweetStatus[index]['text'],
+                                    style: TextStyle(fontSize: 18.0),
+                                    onOpen: (link) {
+                                      Navigator.of(context)
+                                          .push(MaterialPageRoute(
+                                        builder: (BuildContext context) =>
+                                            WebPage(url: link.toString()),
+                                      ));
+                                    },
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(2.0),
+                                  
+                                  child: Row(
+                                    
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.start,
+                                    children: <Widget>[
+                                      Row(
+                                        
+                                        children: <Widget>[
+                                          Icon(
+                                            FontAwesomeIcons.retweet,
+                                            color: Colors.grey,
+                                          ),
+                                          Padding(padding: EdgeInsets.only(right: 10.0),),
+                                          Text(
+                                            tweetStatus[index]['retweet_count']
+                                                .toString(),
+                                          ),
+                                        ],
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                                      ),
+                                      Row(
+                                         
+                                        children: <Widget>[
+                                            Icon(
+                                        FontAwesomeIcons.heart,
+                                        color: Colors.grey,
+                                      ),
+                                       Padding(padding: EdgeInsets.only(right: 10.0),),
+                                      Text(
+                                        tweetStatus[index]['favorite_count']
+                                            .toString(),
+                                      ),
+                                        ],
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                                      ),
+                                      Row(
+                                        children: <Widget>[
+                                          FlatButton(
+                                                                                  child: Icon(
+                                            FontAwesomeIcons.shareAlt,
+                                            color: Colors.grey,
+                                          ), onPressed: () async{
+                                            var response = await FlutterShareMe()
+                                              .shareToSystem(
+                                                  msg: tweetStatus[index][
+                                                      'text']);
+                                                      if (response == 'success') {
+                                            print('navigate success');
+                                          }
+                                          },
+                                        ),
+                                      
+                                        ],
+                                      )
+                                      
+                                    ],
+                                  ),
+                                )
+                              ],
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                    Divider(),
+                  ],
                 ),
               );
+//CachedNetworkImage(imageUrl: tweetStatus[index]['user']['profile_background_image_url_https'],
+              // Card(
+              //   child: ListTile(
+              //     subtitle: Linkify(
+              //       text: tweetStatus[index]['text'],
+              //       onOpen: (link){
+              //         Navigator.of(context).push(MaterialPageRoute(
+              //                     builder: (BuildContext context) => WebPage(
+
+              //                         url: link.toString()),
+              //                   ));
+              //       },
+              //     ),
+              //     // Text(tweetStatus[index]['text'].toString()),
+              //     title: Text(tweetStatus[index]['user']['name']),
+              //   ),
+              // );
             },
           )),
-        ), onWillPop: _willPopcallback,
+        ),
+        onWillPop: _willPopcallback,
       );
-    }
-    
-    else {
+    } else {
       return MaterialApp(
         home: Scaffold(
           body: Container(
@@ -96,11 +284,11 @@ class TrendTweetsState extends State<TrendTweets> {
           ),
         ),
       );
-    } 
+    }
   }
-  Future<bool> _willPopcallback() async{
+
+  Future<bool> _willPopcallback() async {
     tweetStatus = null;
     return true;
-  
   }
 }

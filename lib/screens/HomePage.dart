@@ -97,61 +97,60 @@ class _HomePageState extends State<HomePage> {
                     return FutureBuilder(
                       builder:
                           (BuildContext context, AsyncSnapshot<String> text) {
-                        return Container(
-                          margin: const EdgeInsets.only(bottom: 12.0),
-                          constraints: new BoxConstraints.expand(
-                            height: 200.0,
-                          ),
-                          alignment: Alignment.bottomLeft,
-                          decoration: BoxDecoration(
-                              image: DecorationImage(
-                                  image: text.data != null
-                                      ? CachedNetworkImageProvider(text.data)
-                                      : CachedNetworkImageProvider(
-                                          'http://www.allwhitebackground.com/images/2/2270.jpg'),
-                                  fit: BoxFit.cover)),
+                        return Card(
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(25.0)),
+                          elevation: 5.0,
                           child: Container(
-                            color: Theme.of(context).accentColor,
-                            child: ListTile(
-                              title: Text(
-                                "#${trenddata[index]['name'].toString().replaceAll(RegExp("#"), '')}",
-                                style: TextStyle(
-                                  fontSize: 20.0,
-                                  fontWeight: FontWeight.w700,
+                            constraints: new BoxConstraints.expand(
+                              height: 300.0,
+                            ),
+                            alignment: Alignment.bottomLeft,
+                            decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(15.0),
+                                image: DecorationImage(
+                                    image: text.data != null
+                                        ? CachedNetworkImageProvider(text.data)
+                                        : CachedNetworkImageProvider(
+                                            'http://www.allwhitebackground.com/images/2/2270.jpg'),
+                                    fit: BoxFit.cover)),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.only(bottomLeft: Radius.circular(15.0),bottomRight: Radius.circular(15.0)),
+                                color: Theme.of(context).accentColor,
+                              ),
+                              
+                              child: ListTile(
+
+                                title: Text(
+                                  "#${trenddata[index]['name'].toString().replaceAll(RegExp("#"), '')}",
+                                  style: TextStyle(
+                                    fontSize: 20.0,
+                                    fontWeight: FontWeight.w700,
+                                  ),
                                 ),
-                              ),
-                              trailing: GestureDetector(
-                                onTap: () async {
-                                  var response = await FlutterShareMe()
-                                      .shareToSystem(
-                                          msg: trenddata[index]
-                                              ['url']); //share to system
-                                  if (response == 'success') {
-                                    print('navigate success');
-                                  }
-                                },
-                                child: Icon(Icons.share),
-                              ),
-                              subtitle:
-                                  Text("${trenddata[index]['tweet_volume']}"),
-                              onTap: () {
+                                trailing: GestureDetector(
+                                  onTap: () async {
+                                    var response = await FlutterShareMe()
+                                        .shareToSystem(
+                                            msg: trenddata[index]
+                                                ['url']); //share to system
+                                    if (response == 'success') {
+                                      print('navigate success');
+                                    }
+                                  },
+                                  child: Icon(Icons.share),
+                                ),
+                                subtitle:
+                                    Text("${trenddata[index]['tweet_volume']}"),
+                                onTap: () {
                                   Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (BuildContext context) =>
-                                  TrendTweets(mainQuery: "${trenddata[index]['name'].toString().replaceAll(RegExp("#"), '')}"),
+                                    builder: (BuildContext context) => TrendTweets(
+                                        mainQuery:
+                                            "${trenddata[index]['name'].toString().replaceAll(RegExp("#"), '')}"),
                                   ));
-                                
-                              },
-                              onLongPress: () {
-                                // _showAlertDialog(
-                                //     "${trenddata[index]['name'].toString()}",
-                                //     trenddata[index]['url']);
-                                Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (BuildContext context) => WebPage(
-                                      list: trenddata,
-                                      index: index,
-                                      url: trenddata[index]['url']),
-                                ));
-                              },
+                                },
+                              ),
                             ),
                           ),
                         );
@@ -252,28 +251,19 @@ class _HomePageState extends State<HomePage> {
       if (ifright == false) {
         trenddata.removeAt(i);
       }
-      //debugPrint(qdata.toString());
-
     }
   }
 }
 
 Future<String> getImage(String imageTerm) async {
-  //var uri = Uri.parse('https://api.cognitive.microsoft.com/bing/v7.0/images/search?q=$imageTerm&count=10');
-// var request = new http.Request("GET", uri)..headers['Ocp-Apim-Subscription-Key'] = "f03e02708d8740719c4f0b3b21dcf018";
   var response = await http.get(
       'https://api.cognitive.microsoft.com/bing/v7.0/images/search?q=$imageTerm&count=10',
       headers: {
         "Ocp-Apim-Subscription-Key": "f03e02708d8740719c4f0b3b21dcf018"
       });
-// Map NewsData = json.decode(response.body) as Map;
   Map data = json.decode(response.body) as Map;
-//List value = List.from(data['value']);
   List value = data['value'];
   String image = value[0]['contentUrl'];
-  // debugPrint(image);
-//  var response = await request.body;
-//  debugPrint(json.decode(response.toString()));
   String defa = 'http://www.allwhitebackground.com/images/2/2270.jpg';
   if (value.isEmpty) {
     return defa;
