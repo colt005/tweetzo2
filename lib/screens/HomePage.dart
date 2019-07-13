@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:tweetzo/screens/TrendTweets.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'package:twitter/twitter.dart';
@@ -134,17 +135,21 @@ class _HomePageState extends State<HomePage> {
                               subtitle:
                                   Text("${trenddata[index]['tweet_volume']}"),
                               onTap: () {
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (BuildContext context) =>
+                                  TrendTweets(mainQuery: "${trenddata[index]['name'].toString().replaceAll(RegExp("#"), '')}")));
+                                
+                              },
+                              onLongPress: () {
+                                // _showAlertDialog(
+                                //     "${trenddata[index]['name'].toString()}",
+                                //     trenddata[index]['url']);
                                 Navigator.of(context).push(MaterialPageRoute(
                                   builder: (BuildContext context) => WebPage(
                                       list: trenddata,
                                       index: index,
                                       url: trenddata[index]['url']),
                                 ));
-                              },
-                              onLongPress: () {
-                                _showAlertDialog(
-                                    "${trenddata[index]['name'].toString()}",
-                                    trenddata[index]['url']);
                               },
                             ),
                           ),

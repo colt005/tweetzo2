@@ -24,6 +24,7 @@ dependencies:
       url: git://github.com/sh4869/oauth.dart.git
       ref: develop
   twitter: ^1.0.0
+  flutter_linkify: ^2.1.0
   flutter_webview_plugin: any
   geolocator: ^4.0.3
   flutter_share_me: ^0.2.1
