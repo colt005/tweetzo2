@@ -137,7 +137,8 @@ class _HomePageState extends State<HomePage> {
                               onTap: () {
                                   Navigator.of(context).push(MaterialPageRoute(
                                   builder: (BuildContext context) =>
-                                  TrendTweets(mainQuery: "${trenddata[index]['name'].toString().replaceAll(RegExp("#"), '')}")));
+                                  TrendTweets(mainQuery: "${trenddata[index]['name'].toString().replaceAll(RegExp("#"), '')}"),
+                                  ));
                                 
                               },
                               onLongPress: () {
