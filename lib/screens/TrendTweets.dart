@@ -13,7 +13,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 String SearchUrl = "/search/tweets.json?q=";
 String SearchQuery =
-    ' filter%3Averified%20filter%3Anews&include_entities=true&lang=en';
+    ' filter%3Averified%20filter%3Anews&lang=en';
 String userLattitude;
 String userLongitude;
 Map data;

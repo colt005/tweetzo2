@@ -103,7 +103,7 @@ class _HomePageState extends State<HomePage> {
                           elevation: 5.0,
                           child: Container(
                             constraints: new BoxConstraints.expand(
-                              height: 300.0,
+                              height: 270.0,
                             ),
                             alignment: Alignment.bottomLeft,
                             decoration: BoxDecoration(
