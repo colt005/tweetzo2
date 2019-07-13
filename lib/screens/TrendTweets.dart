@@ -70,7 +70,7 @@ class TrendTweetsState extends State<TrendTweets> {
       return WillPopScope(
               child: Scaffold(
           appBar: AppBar(
-            title: Text("Tweets"),
+            title: Text("#${widget.mainQuery}"),
           ),
           body: Container(
               child: ListView.builder(
