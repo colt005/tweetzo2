@@ -149,8 +149,9 @@ class TrendTweetsState extends State<TrendTweets> {
                                                   ['name'],
                                               style: Theme.of(context).textTheme.title,
                                             ),
+                                          
                                             TextSpan(
-                                                text: " " +
+                                                text: " @" +
                                                     tweetStatus[index]['user']
                                                         ['screen_name'],
                                                 style: TextStyle(
