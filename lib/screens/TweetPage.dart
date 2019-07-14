@@ -16,7 +16,9 @@ import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
 import 'WebPage.dart';
 
 String SearchUrl = "/search/tweets.json?q=";
-String SearchQuery = 'filter%3Averified%20filter%3Anews&geocode=$userLattitude,$userLongitude,300km&include_entities=true&lang=en';  //filter%3Averified%20filter%3Anews
+String searchTerm = "";
+String SearchQuery =
+    ' filter%3Averified%20filter%3Anews&geocode=$userLattitude,$userLongitude,5000km&include_entities=true&lang=en'; //filter%3Averified%20filter%3Anews
 String SearchLat = "";
 String SearchLong = "";
 String SearchRad = "";
@@ -28,61 +30,108 @@ Map tweetUser;
 // Pixabay API key 12901536-156cd75b50243be5eaccdfaac
 //Azure api key f03e02708d8740719c4f0b3b21dcf018
 
-
-class TweetPage extends StatefulWidget{
+class TweetPage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
     return TweetPageState();
+  }
+}
 
-      }
-    
-    }
-    
-    class TweetPageState extends State<TweetPage>{
-       @override
+class TweetPageState extends State<TweetPage> {
+  TextEditingController searchController = new TextEditingController();
+  @override
   void initState() {
     super.initState();
     getLocation();
   }
-    void getLocation() async {
+
+  void getLocation() async {
     Position position = await Geolocator()
         .getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
     debugPrint(position.toString());
     userLongitude = position.longitude.toString();
     userLattitude = position.latitude.toString();
-       
+
     getData();
     // tryonr();
   }
 
-  void getData() async{
-    Twitter twitter = new Twitter(secrets().CONSUMER_KEY, secrets().CONSUMER_SECRET,
-        secrets().ACCESS_TOKEN, secrets().ACCESS_TOKEN_SECRET);
-    var response = await twitter.request("GET", SearchUrl+SearchQuery);
-    
+  void getData() async {
+    Twitter twitter = new Twitter(
+        secrets().CONSUMER_KEY,
+        secrets().CONSUMER_SECRET,
+        secrets().ACCESS_TOKEN,
+        secrets().ACCESS_TOKEN_SECRET);
+
+    var response =
+        await twitter.request("GET", SearchUrl + searchTerm + SearchQuery);
+
     data = json.decode(response.body) as Map;
-    debugPrint("Rohan"+data.toString());
+    debugPrint("Rohan" + data.toString());
     //debugPrint("Ronnnn"+data.toString());
     // List lis2 = new List.from(data[0]);
     //debugPrint("Ronnn"+lis2.toString());
     tweetStatus = new List.from(data['statuses']);
-    
+
     //TODO: Get User from tweet
     //tweetUser = new Map.from(data['user']);
-    
-
 
     setState(() {});
-
   }
+  Icon actionIcon = Icon(Icons.search);
+  Widget appBarTitle = Text("Tweets");
   @override
   Widget build(BuildContext context) {
-    
-
     if (tweetStatus != null) {
       return WillPopScope(
         child: Scaffold(
-          
+          appBar: AppBar(
+            
+            backgroundColor: Colors.white,
+            actions: <Widget>[
+              IconButton(
+                icon: actionIcon,
+                onPressed: (){
+                  setState(() {
+                   if(this.actionIcon.icon == Icons.search) {
+                     this.actionIcon = Icon(Icons.close);
+                     this.appBarTitle = TextField(
+              
+              controller: searchController,
+              obscureText: false,
+              onChanged: (query){
+                
+                  searchTerm = query;
+                  getData();
+              },
+              style: Theme.of(context).textTheme.subhead,
+              decoration: InputDecoration(
+                suffixIcon: IconButton(
+                  icon: Icon(Icons.clear,color: Colors.blueGrey,),
+                  onPressed: (){
+                    this.setState((){
+                      searchController.clear();
+                      searchTerm = '';
+                      getData();
+                    });
+                    
+                  },
+                ),
+                  contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+                  hintText: "Search Tweet..",
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(32.0))),
+            );
+                   }else{
+                     this.actionIcon = Icon(Icons.search);
+                     this.appBarTitle = appBarTitle = Text("Tweets");
+                   }
+                  });
+                },
+              ),
+            ],
+            title: appBarTitle,
+          ),
           body: Container(
               child: ListView.builder(
             itemCount: tweetStatus.length,
@@ -301,25 +350,15 @@ class TweetPage extends StatefulWidget{
           .toString();
     }
   }
-
- }
-
-
-
-
-
-
-
+}
 
 // class TweetPage extends StatelessWidget{
 //   @override
 //   Widget build(BuildContext context) {
-    
+
 //     return Container(
 //       child: Center(
 //         child: Icon(Icons.airplay, size: 150.0, color: Colors.black),
 //       ),
 //     );
 //   }
-
-
