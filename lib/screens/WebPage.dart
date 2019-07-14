@@ -17,7 +17,15 @@ class WebPage extends StatefulWidget {
 class _WebPageState extends State<WebPage> {
   @override
   Widget build(BuildContext context) {
-    return Container(
+    if(widget.url == "0" ){
+      return Container(
+        color: Colors.white,
+        child: Center(
+          child: Text("Sorry, Not Available!",style: Theme.of(context).textTheme.body1,),
+        ),
+      );
+    }else{
+      return Container(
       child: WebviewScaffold(
         url: "${widget.url}",
         resizeToAvoidBottomInset: true,
@@ -33,6 +41,10 @@ class _WebPageState extends State<WebPage> {
         
       ),
     );
+    }
+      
+    
+    
   }
 }
 

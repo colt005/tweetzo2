@@ -12,8 +12,7 @@ import 'package:flutter_share_me/flutter_share_me.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 String SearchUrl = "/search/tweets.json?q=";
-String SearchQuery =
-    ' filter%3Averified%20filter%3Anews&lang=en';
+String SearchQuery = ' filter%3Averified%20filter%3Anews&lang=en';
 String userLattitude;
 String userLongitude;
 Map data;
@@ -147,9 +146,10 @@ class TrendTweetsState extends State<TrendTweets> {
                                             TextSpan(
                                               text: tweetStatus[index]['user']
                                                   ['name'],
-                                              style: Theme.of(context).textTheme.title,
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .title,
                                             ),
-                                          
                                             TextSpan(
                                                 text: " @" +
                                                     tweetStatus[index]['user']
@@ -161,6 +161,27 @@ class TrendTweetsState extends State<TrendTweets> {
                                           overflow: TextOverflow.ellipsis,
                                         )),
                                         flex: 5,
+                                      ),
+                                      Expanded(
+                                        child: Padding(
+                                          padding:
+                                              const EdgeInsets.only(right: 4.0),
+                                          child: GestureDetector(
+                                            onTap: () {
+                                              Navigator.of(context)
+                                                  .push(MaterialPageRoute(
+                                                builder: (BuildContext
+                                                        context) =>
+                                                    WebPage(url: retUrl(index)),
+                                              ));
+                                            },
+                                            child: Icon(
+                                              Icons.open_in_browser,
+                                              color: Colors.grey,
+                                            ),
+                                          ),
+                                        ),
+                                        flex: 1,
                                       ),
                                     ],
                                   ),
@@ -175,27 +196,26 @@ class TrendTweetsState extends State<TrendTweets> {
                                       Navigator.of(context)
                                           .push(MaterialPageRoute(
                                         builder: (BuildContext context) =>
-                                            WebPage(url: link.toString()),
+                                            WebPage(url: retUrl(index)),
                                       ));
                                     },
                                   ),
                                 ),
                                 Padding(
                                   padding: const EdgeInsets.all(2.0),
-                                  
                                   child: Row(
-                                    
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.start,
                                     children: <Widget>[
                                       Row(
-                                        
                                         children: <Widget>[
                                           Icon(
                                             FontAwesomeIcons.retweet,
                                             color: Colors.grey,
                                           ),
-                                          Padding(padding: EdgeInsets.only(right: 10.0),),
+                                          Padding(
+                                            padding:
+                                                EdgeInsets.only(right: 10.0),
+                                          ),
                                           Text(
                                             tweetStatus[index]['retweet_count']
                                                 .toString(),
@@ -203,45 +223,50 @@ class TrendTweetsState extends State<TrendTweets> {
                                         ],
                                       ),
                                       Padding(
-                                        padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 20.0),
                                       ),
                                       Row(
-                                         
                                         children: <Widget>[
-                                            Icon(
-                                        FontAwesomeIcons.heart,
-                                        color: Colors.grey,
-                                      ),
-                                       Padding(padding: EdgeInsets.only(right: 10.0),),
-                                      Text(
-                                        tweetStatus[index]['favorite_count']
-                                            .toString(),
-                                      ),
+                                          Icon(
+                                            FontAwesomeIcons.heart,
+                                            color: Colors.grey,
+                                          ),
+                                          Padding(
+                                            padding:
+                                                EdgeInsets.only(right: 10.0),
+                                          ),
+                                          Text(
+                                            tweetStatus[index]['favorite_count']
+                                                .toString(),
+                                          ),
                                         ],
                                       ),
                                       Padding(
-                                        padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 20.0),
                                       ),
                                       Row(
                                         children: <Widget>[
                                           FlatButton(
-                                                                                  child: Icon(
-                                            FontAwesomeIcons.shareAlt,
-                                            color: Colors.grey,
-                                          ), onPressed: () async{
-                                            var response = await FlutterShareMe()
-                                              .shareToSystem(
-                                                  msg: tweetStatus[index][
-                                                      'text']);
-                                                      if (response == 'success') {
-                                            print('navigate success');
-                                          }
-                                          },
-                                        ),
-                                      
+                                            child: Icon(
+                                              FontAwesomeIcons.shareAlt,
+                                              color: Colors.grey,
+                                            ),
+                                            onPressed: () async {
+                                              var response =
+                                                  await FlutterShareMe()
+                                                      .shareToSystem(
+                                                          msg:
+                                                              tweetStatus[index]
+                                                                  ['text']);
+                                              if (response == 'success') {
+                                                print('navigate success');
+                                              }
+                                            },
+                                          ),
                                         ],
                                       )
-                                      
                                     ],
                                   ),
                                 )
@@ -291,5 +316,14 @@ class TrendTweetsState extends State<TrendTweets> {
   Future<bool> _willPopcallback() async {
     tweetStatus = null;
     return true;
+  }
+
+  String retUrl(int index) {
+    if (List.from(tweetStatus[index]['entities']['urls']).length == 0) {
+      return "0";
+    } else {
+      return tweetStatus[index]['entities']['urls'][0]['expanded_url']
+          .toString();
+    }
   }
 }
