@@ -12,7 +12,7 @@ import 'package:flutter_share_me/flutter_share_me.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 String SearchUrl = "/search/tweets.json?q=";
-String SearchQuery = ' filter%3Averified%20filter%3Anews&lang=en';
+String SearchQuery = ' filter%3Averified%20filter%3Anews&lang=en&tweet_mode=extended';
 String userLattitude;
 String userLongitude;
 Map data;
@@ -190,7 +190,7 @@ class TrendTweetsState extends State<TrendTweets> {
                                   padding:
                                       const EdgeInsets.symmetric(vertical: 4.0),
                                   child: Linkify(
-                                    text: tweetStatus[index]['text'],
+                                    text: tweetStatus[index]['full_text'],
                                     style: TextStyle(fontSize: 18.0),
                                     onOpen: (link) {
                                       Navigator.of(context)

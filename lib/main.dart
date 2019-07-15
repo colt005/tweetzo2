@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'screens/HomePage.dart';
 import 'screens/TweetPage.dart';
+import 'package:android_intent/android_intent.dart';
 
 void main() {
   runApp(MaterialApp(home: Tabs(),
@@ -22,6 +24,8 @@ class TabsState extends State<Tabs> with SingleTickerProviderStateMixin {
   void initState() {
     super.initState();
     controller = new TabController(vsync: this, length: 2);
+    _checkGps();
+    
   }
 
   @override
@@ -90,5 +94,33 @@ class TabsState extends State<Tabs> with SingleTickerProviderStateMixin {
         ),
       ),
     );
+  }
+  Future _checkGps() async {
+    if (!(await Geolocator().isLocationServiceEnabled())) {
+      if (Theme.of(context).platform == TargetPlatform.android) {
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text("Can't get gurrent location"),
+              content:
+                  const Text('Please make sure you enable GPS and try again'),
+              actions: <Widget>[
+                FlatButton(
+                  child: Text('Ok'),
+                  onPressed: () {
+                    final AndroidIntent intent = new AndroidIntent(
+                        action: 'android.settings.LOCATION_SOURCE_SETTINGS');
+
+                    intent.launch();
+                    Navigator.of(context, rootNavigator: true).pop();
+                  },
+                ),
+              ],
+            );
+          },
+        );
+      }
+    }
   }
 }

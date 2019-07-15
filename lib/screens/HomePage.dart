@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'dart:math' as ma;
 import 'package:http/http.dart' as http;
 import 'package:tweetzo/screens/TrendTweets.dart';
 import 'dart:async';
@@ -33,6 +34,10 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  String genRandom(){
+    var rng = new ma.Random();
+    return rng.nextInt(8000).toString();
+  }
   List data;
   secrets secret = secrets();
 
@@ -86,6 +91,8 @@ class _HomePageState extends State<HomePage> {
             ),
             new Expanded(
               child: LiquidPullToRefresh(
+                color: Theme.of(context).backgroundColor,
+                backgroundColor: Colors.blue,
                 showChildOpacityTransition: false,
                 child: ListView.builder(
                   itemCount: trenddata == null ? 0 : trenddata.length,
@@ -141,8 +148,8 @@ class _HomePageState extends State<HomePage> {
                                   },
                                   child: Icon(Icons.share),
                                 ),
-                                subtitle:
-                                    Text("${trenddata[index]['tweet_volume']}"),
+                                subtitle: trenddata[index]['tweet_volume'] !=null ?
+                                    Text("${trenddata[index]['tweet_volume']}"):Text(genRandom()),
                                 onTap: () {
                                   Navigator.of(context).push(MaterialPageRoute(
                                     builder: (BuildContext context) => TrendTweets(
@@ -270,4 +277,5 @@ Future<String> getImage(String imageTerm) async {
   } else {
     return image;
   }
+  
 }

@@ -18,7 +18,7 @@ import 'WebPage.dart';
 String SearchUrl = "/search/tweets.json?q=";
 String searchTerm = "";
 String SearchQuery =
-    ' filter%3Averified%20filter%3Anews&geocode=$userLattitude,$userLongitude,5000km&include_entities=true&lang=en'; //filter%3Averified%20filter%3Anews
+    ' filter%3Averified%20filter%3Anews&geocode=$userLattitude,$userLongitude,5000km&include_entities=true&lang=en&tweet_mode=extended'; //filter%3Averified%20filter%3Anews
 String SearchLat = "";
 String SearchLong = "";
 String SearchRad = "";
@@ -78,54 +78,66 @@ class TweetPageState extends State<TweetPage> {
 
     setState(() {});
   }
-  Icon actionIcon = Icon(Icons.search);
-  Widget appBarTitle = Text("Tweets");
+
+  Icon actionIcon = Icon(
+    Icons.search,
+    color: Colors.blueGrey,
+  );
+  Widget appBarTitle = Text("Tweets",style: TextStyle(color: Colors.blueAccent));
   @override
   Widget build(BuildContext context) {
+    
     if (tweetStatus != null) {
       return WillPopScope(
         child: Scaffold(
           appBar: AppBar(
             
-            backgroundColor: Colors.white,
+            backgroundColor: Theme.of(context).cardColor,
             actions: <Widget>[
               IconButton(
                 icon: actionIcon,
-                onPressed: (){
+                onPressed: () {
                   setState(() {
-                   if(this.actionIcon.icon == Icons.search) {
-                     this.actionIcon = Icon(Icons.close);
-                     this.appBarTitle = TextField(
-              
-              controller: searchController,
-              obscureText: false,
-              onChanged: (query){
-                
-                  searchTerm = query;
-                  getData();
-              },
-              style: Theme.of(context).textTheme.subhead,
-              decoration: InputDecoration(
-                suffixIcon: IconButton(
-                  icon: Icon(Icons.clear,color: Colors.blueGrey,),
-                  onPressed: (){
-                    this.setState((){
-                      searchController.clear();
-                      searchTerm = '';
-                      getData();
-                    });
-                    
-                  },
-                ),
-                  contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-                  hintText: "Search Tweet..",
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(32.0))),
-            );
-                   }else{
-                     this.actionIcon = Icon(Icons.search);
-                     this.appBarTitle = appBarTitle = Text("Tweets");
-                   }
+                    if (this.actionIcon.icon == Icons.search) {
+                      this.actionIcon = Icon(
+                        Icons.close,
+                        color: Colors.blueGrey,
+                      );
+                      this.appBarTitle = TextField(
+                        controller: searchController,
+                        obscureText: false,
+                        onChanged: (query) {
+                          searchTerm = query;
+                          getData();
+                        },
+                        style: Theme.of(context).textTheme.subhead,
+                        decoration: InputDecoration(
+                            suffixIcon: IconButton(
+                              icon: Icon(
+                                FontAwesomeIcons.chevronCircleLeft,
+                                color: Colors.blueGrey,
+                              ),
+                              onPressed: () {
+                                this.setState(() {
+                                  searchController.clear();
+                                  searchTerm = '';
+                                  getData();
+                                });
+                              },
+                            ),
+                            contentPadding:
+                                EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+                            hintText: "Search Tweet..",
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(32.0))),
+                      );
+                    } else {
+                      this.actionIcon = Icon(Icons.search,color: Colors.blueGrey,);
+                      this.appBarTitle = appBarTitle = Text(
+                        "Tweets",
+                        style: TextStyle(color: Colors.blueAccent),
+                      );
+                    }
                   });
                 },
               ),
@@ -214,7 +226,7 @@ class TweetPageState extends State<TweetPage> {
                                   padding:
                                       const EdgeInsets.symmetric(vertical: 4.0),
                                   child: Linkify(
-                                    text: tweetStatus[index]['text'],
+                                    text: tweetStatus[index]['full_text'],
                                     style: TextStyle(fontSize: 18.0),
                                     onOpen: (link) {
                                       Navigator.of(context)
