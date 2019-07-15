@@ -3,10 +3,38 @@ import 'package:geolocator/geolocator.dart';
 import 'screens/HomePage.dart';
 import 'screens/TweetPage.dart';
 import 'package:android_intent/android_intent.dart';
+import 'package:splashscreen/splashscreen.dart';
+import 'screens/HomePage.dart' as hp;
+
 
 void main() {
-  runApp(MaterialApp(home: Tabs(),
+  
+  runApp(MaterialApp(home: Splaash(),
   debugShowCheckedModeBanner: false,));
+}
+
+class Splaash extends StatefulWidget {
+  @override
+  _SplaashState createState() => _SplaashState();
+}
+
+class _SplaashState extends State<Splaash> {
+  @override
+  Widget build(BuildContext context) {
+    return SplashScreen(seconds: 3,
+    navigateAfterSeconds: Tabs(),
+    title: Text("Tweetzo",style: TextStyle(
+    color: Colors.white,
+    fontSize: 28.0
+    ),),
+    image: Image.asset('assets/images/hashtag.png'),
+    backgroundColor: Colors.lightBlue,
+    photoSize: 80.0,
+    loaderColor: Colors.white,
+    
+      
+    );
+  }
 }
 
 class Tabs extends StatefulWidget {
@@ -17,6 +45,7 @@ class Tabs extends StatefulWidget {
 }
 
 class TabsState extends State<Tabs> with SingleTickerProviderStateMixin {
+  BuildContext c;
   TabController controller;
   bool darkThemeEnabled = false;
 
@@ -24,9 +53,12 @@ class TabsState extends State<Tabs> with SingleTickerProviderStateMixin {
   void initState() {
     super.initState();
     controller = new TabController(vsync: this, length: 2);
+    
     _checkGps();
     
+    
   }
+  
 
   @override
   void dispose() {
@@ -36,7 +68,12 @@ class TabsState extends State<Tabs> with SingleTickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    
+    
+    
+    
     return MaterialApp(
+      
       theme: darkThemeEnabled ? ThemeData(
         brightness: Brightness.dark,
         
@@ -59,6 +96,7 @@ class TabsState extends State<Tabs> with SingleTickerProviderStateMixin {
                   });
                 } else if (darkThemeEnabled == true) {
                   setState(() {
+                    
                     darkThemeEnabled = false;
                   });
                 }
@@ -102,7 +140,7 @@ class TabsState extends State<Tabs> with SingleTickerProviderStateMixin {
           context: context,
           builder: (BuildContext context) {
             return AlertDialog(
-              title: Text("Can't get gurrent location"),
+              title: Text("Can't get current location"),
               content:
                   const Text('Please make sure you enable GPS and try again'),
               actions: <Widget>[
