@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:geolocator/geolocator.dart';
@@ -13,6 +14,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
 
+import 'UserTimeline.dart';
 import 'WebPage.dart';
 
 String SearchUrl = "/search/tweets.json?q=";
@@ -27,8 +29,7 @@ String userLongitude;
 Map data;
 List tweetStatus;
 Map tweetUser;
-// Pixabay API key 12901536-156cd75b50243be5eaccdfaac
-//Azure api key f03e02708d8740719c4f0b3b21dcf018
+
 
 class TweetPage extends StatefulWidget {
   @override
@@ -38,10 +39,12 @@ class TweetPage extends StatefulWidget {
 }
 
 class TweetPageState extends State<TweetPage> {
+  Widget cirr = Center(child: CircularProgressIndicator());
   TextEditingController searchController = new TextEditingController();
   @override
   void initState() {
     super.initState();
+   
     getLocation();
   }
 
@@ -83,15 +86,15 @@ class TweetPageState extends State<TweetPage> {
     Icons.search,
     color: Colors.blueGrey,
   );
-  Widget appBarTitle = Text("Tweets",style: TextStyle(color: Colors.blueAccent));
+  Widget appBarTitle =
+      Text("Tweets", style: TextStyle(color: Colors.blueAccent));
   @override
   Widget build(BuildContext context) {
-    
     if (tweetStatus != null) {
-      return WillPopScope(
+     
+         return WillPopScope(
         child: Scaffold(
           appBar: AppBar(
-            
             backgroundColor: Theme.of(context).cardColor,
             actions: <Widget>[
               IconButton(
@@ -132,7 +135,15 @@ class TweetPageState extends State<TweetPage> {
                                 borderRadius: BorderRadius.circular(32.0))),
                       );
                     } else {
-                      this.actionIcon = Icon(Icons.search,color: Colors.blueGrey,);
+                      this.setState(() {
+                        searchController.clear();
+                        searchTerm = '';
+                        getData();
+                      });
+                      this.actionIcon = Icon(
+                        Icons.search,
+                        color: Colors.blueGrey,
+                      );
                       this.appBarTitle = appBarTitle = Text(
                         "Tweets",
                         style: TextStyle(color: Colors.blueAccent),
@@ -180,6 +191,32 @@ class TweetPageState extends State<TweetPage> {
                                             child: RichText(
                                           text: TextSpan(children: [
                                             TextSpan(
+                                              recognizer: TapGestureRecognizer()
+                                                ..onTap = () {
+                                                  Navigator.of(context)
+                                                      .push(MaterialPageRoute(
+                                                    builder: (BuildContext
+                                                            context) =>
+                                                        UserTimeline(
+                                                      userId: tweetStatus[index]
+                                                              ['user']['id']
+                                                          .toString(),
+                                                      userName:
+                                                          tweetStatus[index]
+                                                              ['user']['name'],
+                                                      banner: tweetStatus[index]
+                                                              ['user'][
+                                                          'profile_banner_url'],
+                                                      profpic: tweetStatus[
+                                                              index]['user']
+                                                          ['profile_image_url'].toString().replaceAll(RegExp("normal"), 'bigger'),
+                                                      screenname:
+                                                          tweetStatus[index]
+                                                                  ['user']
+                                                              ['screen_name'],
+                                                    ),
+                                                  ));
+                                                },
                                               text: tweetStatus[index]['user']
                                                   ['name'],
                                               style: Theme.of(context)
@@ -338,11 +375,13 @@ class TweetPageState extends State<TweetPage> {
         ),
         onWillPop: _willPopcallback,
       );
+     
+     
     } else {
       return MaterialApp(
         home: Scaffold(
           body: Container(
-            child: Center(child: CircularProgressIndicator()),
+            child: cirr,
           ),
         ),
       );
@@ -353,16 +392,20 @@ class TweetPageState extends State<TweetPage> {
     tweetStatus = null;
     return true;
   }
-
-  String retUrl(int index) {
-    if (List.from(tweetStatus[index]['entities']['urls']).length == 0) {
-      return "0";
-    } else {
-      return tweetStatus[index]['entities']['urls'][0]['expanded_url']
-          .toString();
+  
+    
+      String retUrl(int index) {
+        if (List.from(tweetStatus[index]['entities']['urls']).length == 0) {
+          return "0";
+        } else {
+          return tweetStatus[index]['entities']['urls'][0]['expanded_url']
+              .toString();
+        }
+      }
     }
-  }
-}
+    
+  
+
 
 // class TweetPage extends StatelessWidget{
 //   @override

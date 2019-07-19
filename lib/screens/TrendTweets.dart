@@ -21,6 +21,7 @@ Map data;
 List tweetStatus;
 Map tweetUser;
 
+
 class TrendTweets extends StatefulWidget {
   String mainQuery;
   TrendTweets({this.mainQuery});
@@ -32,9 +33,11 @@ class TrendTweets extends StatefulWidget {
 
 class TrendTweetsState extends State<TrendTweets> {
   TapGestureRecognizer openUser;
+  Widget cirr = Center(child: CircularProgressIndicator());
   @override
   void initState() {
     super.initState();
+    cirrr();
     getLocation();
     
   }
@@ -70,44 +73,17 @@ class TrendTweetsState extends State<TrendTweets> {
     //TODO: Get User from tweet
     //tweetUser = new Map.from(data['user']);
 
-    setState(() {});
+    setState(() {
+      
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    // if(tweetStatus!=null) {
-    //   return WillPopScope(
-    //           child: Scaffold(
-    //       appBar: AppBar(
-    //         title: Text("#${widget.mainQuery}"),
-    //       ),
-    //       body: Container(
-    //           child: ListView.builder(
-    //         itemCount: tweetStatus.length,
-    //         itemBuilder: (BuildContext context, int index) {
-    //           return Card(
-    //             child: ListTile(
-    //               subtitle: Linkify(
-    //                 text: tweetStatus[index]['text'],
-    //                 onOpen: (link){
-    //                   Navigator.of(context).push(MaterialPageRoute(
-    //                               builder: (BuildContext context) => WebPage(
-
-    //                                   url: link.toString()),
-    //                             ));
-    //                 },
-    //               ),
-    //               // Text(tweetStatus[index]['text'].toString()),
-    //               title: Text(tweetStatus[index]['user']['name']),
-    //             ),
-    //           );
-    //         },
-    //       )),
-    //     ), onWillPop: _willPopcallback,
-    //   );
-    // }
+   
     if (tweetStatus != null) {
-      return WillPopScope(
+      if(List.from(tweetStatus).isNotEmpty){
+          return WillPopScope(
         child: Scaffold(
           appBar: AppBar(
             title: Text("#${widget.mainQuery}"),
@@ -131,7 +107,7 @@ class TrendTweetsState extends State<TrendTweets> {
                               padding: const EdgeInsets.all(8.0),
                               child: CircleAvatar(
                                 backgroundImage: NetworkImage(tweetStatus[index]
-                                    ['user']['profile_image_url']),
+                                    ['user']['profile_image_url'].toString().replaceAll(RegExp("normal"), 'bigger')),
                               )),
                           Expanded(
                             child: Column(
@@ -318,16 +294,38 @@ class TrendTweetsState extends State<TrendTweets> {
         ),
         onWillPop: _willPopcallback,
       );
+      }else{
+         return MaterialApp(
+        home: Scaffold(
+          body: Container(
+            child: cirr,
+          ),
+        ),
+      );
+      }
+      
     } else {
       return MaterialApp(
         home: Scaffold(
           body: Container(
-            child: Center(child: CircularProgressIndicator()),
+            child: cirr,
           ),
         ),
       );
     }
   }
+   void cirrr()  {
+    int i=0;
+    
+    Future.delayed(const Duration(seconds: 3),(){
+      setState(() {
+       cirr = Center(child : Text("No Verified Tweets Found",style: TextStyle(color: Colors.black),));
+       
+        
+      });
+    });
+   
+      }
 
   Future<bool> _willPopcallback() async {
     tweetStatus = null;
