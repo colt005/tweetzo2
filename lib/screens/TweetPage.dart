@@ -263,14 +263,24 @@ class TweetPageState extends State<TweetPage> {
                                   padding:
                                       const EdgeInsets.symmetric(vertical: 4.0),
                                   child: Linkify(
+                                    humanize: true,
                                     text: tweetStatus[index]['full_text'],
                                     style: TextStyle(fontSize: 18.0),
                                     onOpen: (link) {
-                                      Navigator.of(context)
-                                          .push(MaterialPageRoute(
-                                        builder: (BuildContext context) =>
-                                            WebPage(url: retUrl(index)),
-                                      ));
+                                        Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                            builder: (BuildContext context) =>WebPage(url: link.url)
+                                          )
+                                        );
+
+                                      // Navigator.of(context).push(MaterialPageRoute(
+                                      //   builder: (ctx) => WebviewScaffold(
+                                      //     initialChild: Center(child: CircularProgressIndicator(),),
+                                      //     url: link.url,
+                                      //     appBar: AppBar(title: Text(link.url.toString()),),
+                                      //   )
+                                      // ));
+                                      
                                     },
                                   ),
                                 ),

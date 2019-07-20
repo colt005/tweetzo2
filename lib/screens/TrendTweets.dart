@@ -185,11 +185,11 @@ class TrendTweetsState extends State<TrendTweets> {
                                     text: tweetStatus[index]['full_text'],
                                     style: TextStyle(fontSize: 18.0),
                                     onOpen: (link) {
-                                      Navigator.of(context)
-                                          .push(MaterialPageRoute(
-                                        builder: (BuildContext context) =>
-                                            WebPage(url: retUrl(index)),
-                                      ));
+                                      Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                            builder: (BuildContext context) =>WebPage(url: link.url)
+                                          )
+                                        );
                                     },
                                   ),
                                 ),

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/material.dart' as prefix0;
 import 'dart:math' as ma;
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 import 'package:oauth/oauth.dart';
 import 'package:tweetzo/screens/TrendTweets.dart';
 import 'package:oauth/oauth.dart' as oauth;
@@ -42,24 +43,23 @@ List<String> cities = [
   "Miami",
   "Barcelona",
   "Buenos Aires",
-  "Mumbai", 
+  "Mumbai",
   "Bangalore",
   "Chennai",
-  
 ];
 
 var whoeid;
 
-class HomePage extends StatefulWidget {
+class HomePage2 extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    return _HomePageState();
+    return _HomePage2State();
   }
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePage2State extends State<HomePage2> {
   Map<String, dynamic> formdata;
-  _HomePageState() {
+  _HomePage2State() {
     formdata = {'City': 'Your Location'};
   }
   String genRandom() {
@@ -67,7 +67,6 @@ class _HomePageState extends State<HomePage> {
     return rng.nextInt(8000).toString();
   }
 
-  
   secrets secret = secrets();
 
   List filterdata;
@@ -75,49 +74,40 @@ class _HomePageState extends State<HomePage> {
   String userLongitude;
   List data;
   Future getData() async {
-    
-    
     secrets secret = secrets();
     Twitter twitter = new Twitter(secret.CONSUMER_KEY, secret.CONSUMER_SECRET,
         secret.ACCESS_TOKEN, secret.ACCESS_TOKEN_SECRET);
     //twitter query req for getting the trends
     var response = await twitter.request("GET", trendUrl + whoeid);
-    
-    if(response.statusCode == 200){
+
+    if (response.statusCode == 200) {
       setState(() {
-       
-      data = json.decode(response.body) as List;
+        data = json.decode(response.body) as List;
         Map lis2 = new Map.from(data[0]);
-    //store the trend list from the response in trenddata list
-    trenddata = new List.from(lis2['trends']);
-     
-    });
-        
-    }
-    else{
-      setState(() {
-      selectedCity = "Your Location";
-      
-      getLocation();
+        //store the trend list from the response in trenddata list
+        trenddata = new List.from(lis2['trends']);
       });
-      
+    } else {
+      setState(() {
+        selectedCity = "Your Location";
+
+        getLocation();
+      });
     }
     setState(() {
-      data=null;
+      data = null;
     });
-    
   }
 
   @override
   void initState() {
     super.initState();
     getLocation();
-    
   }
-void dispose(){
-  super.dispose();
-  
-}
+
+  void dispose() {
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -146,101 +136,102 @@ void dispose(){
                 onValueChanged: (value) {
                   setState(() {
                     selectedCity = value;
-                    
+
                     getLocation();
                   });
                 },
               ),
             ),
             new Expanded(
-              child: data==null?LiquidPullToRefresh(
-                color: Theme.of(context).backgroundColor,
-                backgroundColor: Colors.blue,
-                showChildOpacityTransition: false,
-                child: ListView.builder(
-                  itemCount: trenddata == null ? 0 : trenddata.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    // title: Text(
-                    //       "#${trenddata[index]['name'].toString().replaceAll(RegExp("#"), '')}",
-                    //       style: TextStyle(fontSize: 15.0),
-                    //     )
-                    return FutureBuilder(
-                      builder:
-                          (BuildContext context, AsyncSnapshot<String> text) {
-                        return Card(
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(25.0)),
-                          elevation: 5.0,
-                          child: Container(
-                            constraints: new BoxConstraints.expand(
-                              height: 270.0,
-                            ),
-                            alignment: Alignment.bottomLeft,
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(15.0),
-                                image: DecorationImage(
-                                    image: text.data != null
-                                        ? CachedNetworkImageProvider(text.data)
-                                        : CachedNetworkImageProvider(
-                                            'http://www.allwhitebackground.com/images/2/2270.jpg'),
-                                    fit: BoxFit.cover)),
-                            child: Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.only(
-                                    bottomLeft: Radius.circular(15.0),
-                                    bottomRight: Radius.circular(15.0)),
-                                color: Theme.of(context).accentColor,
-                              ),
-                              child: ListTile(
-                                
-                                title: Text(
-                                  "#${trenddata[index]['name'].toString().replaceAll(RegExp("#"), '')}",
-                                  style: TextStyle(
-                                    fontSize: 20.0,
-                                    fontWeight: FontWeight.w700,
+              child: data == null
+                  ? LiquidPullToRefresh(
+                      color: Theme.of(context).backgroundColor,
+                      backgroundColor: Colors.blue,
+                      showChildOpacityTransition: false,
+                      child: ListView.builder(
+                        itemCount: trenddata == null ? 0 : trenddata.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          return FutureBuilder(
+                            builder: (BuildContext context,
+                                AsyncSnapshot<String> text) {
+                              return Stack(
+                                children: <Widget>[
+                                  Card(
+                                    semanticContainer: true,
+                                    clipBehavior: Clip.antiAliasWithSaveLayer,
+                                    child: Container(
+                                      margin: prefix0.EdgeInsets.only(top:61.0,right: 12.0,left: 12.0,bottom: 12.0),
+                                      child: Image(image: text.data != null
+                                          ? CachedNetworkImageProvider(text.data)
+                                          : CachedNetworkImageProvider(
+                                              'http://www.allwhitebackground.com/images/2/2270.jpg'),fit: BoxFit.cover,),
+                                    ),
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(10.0)
+                                            ),
+                                            elevation: 5.0,
+                                            margin: EdgeInsets.all(10),
+                                    
                                   ),
-                                ),
-                                
-                                trailing: GestureDetector(
-                                  onTap: () async {
-                                    var response = await FlutterShareMe()
-                                        .shareToSystem(
-                                            msg: trenddata[index]
-                                                ['url']); //share to system
-                                    if (response == 'success') {
-                                      print('navigate success');
-                                    }
-                                  },
-                                  child: Icon(Icons.share),
-                                ),
-                                subtitle: trenddata[index]['tweet_volume'] !=
-                                        null
-                                    ? Text(
-                                        "${trenddata[index]['tweet_volume']}")
-                                    : Text(genRandom()),
-                                onTap: () {
-                                  Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (BuildContext context) => TrendTweets(
-                                        mainQuery:
-                                            "${trenddata[index]['name'].toString().replaceAll(RegExp("#"), '')}"),
-                                  ));
-                                },
-                              ),
-                            ),
-                          ),
-                        );
+                                  Container(
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.only(
+                                          bottomLeft: Radius.circular(15.0),
+                                          bottomRight: Radius.circular(15.0)),
+                                      color: Theme.of(context).accentColor,
+                                    ),
+                                    child: ListTile(
+                                      title: Text(
+                                        "#${trenddata[index]['name'].toString().replaceAll(RegExp("#"), '')}",
+                                        style: TextStyle(
+                                          fontSize: 20.0,
+                                          fontWeight: FontWeight.w700,
+                                        ),
+                                      ),
+                                      trailing: GestureDetector(
+                                        onTap: () async {
+                                          var response = await FlutterShareMe()
+                                              .shareToSystem(
+                                                  msg: trenddata[index][
+                                                      'url']); //share to system
+                                          if (response == 'success') {
+                                            print('navigate success');
+                                          }
+                                        },
+                                        child: Icon(Icons.share),
+                                      ),
+                                      subtitle: trenddata[index]
+                                                  ['tweet_volume'] !=
+                                              null
+                                          ? Text( NumberFormat.compact().format(trenddata[index]['tweet_volume'])+" Tweets"
+                                              )
+                                          : Text(genRandom()+" Tweets"),
+                                      onTap: () {
+                                        Navigator.of(context)
+                                            .push(MaterialPageRoute(
+                                          builder: (BuildContext context) =>
+                                              TrendTweets(
+                                                  mainQuery:
+                                                      "${trenddata[index]['name'].toString().replaceAll(RegExp("#"), '')}"),
+                                        ));
+                                      },
+                                    ),
+                                  ),
+                                ],
+                              );
+                            },
+                            future: getImage(
+                                "${trenddata[index]['name'].toString().replaceAll(RegExp("#"), '')}"),
+                            initialData:
+                                'http://www.allwhitebackground.com/images/2/2270.jpg',
+                          );
+                        },
+                      ),
+                      onRefresh: () async {
+                        await getLocation();
                       },
-                      future: getImage(
-                          "${trenddata[index]['name'].toString().replaceAll(RegExp("#"), '')}"),
-                      initialData:
-                          'http://www.allwhitebackground.com/images/2/2270.jpg',
-                    );
-                  },
-                ),
-                onRefresh: () async {
-                  await getLocation();
-                },
-              ):Center(child: Text("data")),
+                    )
+                  : Center(child: Text("data")),
             )
           ],
         )),
@@ -249,7 +240,7 @@ void dispose(){
   }
 
   // method to show alert dialog with webview on lonng press of List item
-  AlertDialog _showAlertDialog(String title,BuildContext con) {
+  AlertDialog _showAlertDialog(String title, BuildContext con) {
     AlertDialog alertDialog = AlertDialog(
       backgroundColor: Theme.of(context).primaryColorDark,
       title: AppBar(title: Text(title)),
@@ -306,10 +297,8 @@ void dispose(){
       Map locationmap = result['location'];
       String woeid = locationmap['woeid'].toString();
       debugPrint(woeid);
-      
-          return woeid;
-      
-      
+
+      return woeid;
     }
   }
 
@@ -360,8 +349,6 @@ Future<String> getImage(String imageTerm) async {
   }
 }
 
-
-
 // DropdownButton(
 //                 isExpanded: true,
 //                 icon: Icon(Icons.location_on),
@@ -379,9 +366,6 @@ Future<String> getImage(String imageTerm) async {
 
 //                 });
 //               },),
-
-
-
 
 // CachedNetworkImage(
 //   imageUrl: "http://notAvalid.uri",
