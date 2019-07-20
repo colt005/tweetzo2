@@ -129,7 +129,7 @@ class TabsState extends State<Tabs> with SingleTickerProviderStateMixin {
         ),
         body: new TabBarView(
           controller: controller,
-          children: <Widget>[new HomePage2(), new TweetPage()],
+          children: <Widget>[new HomePage(), new TweetPage()],
         ),
       ),
     );

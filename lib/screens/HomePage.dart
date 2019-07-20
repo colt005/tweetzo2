@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/material.dart' as prefix0;
 import 'dart:math' as ma;
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 import 'package:oauth/oauth.dart';
 import 'package:tweetzo/screens/TrendTweets.dart';
 import 'package:oauth/oauth.dart' as oauth;
@@ -66,6 +67,7 @@ class _HomePageState extends State<HomePage> {
     var rng = new ma.Random();
     return rng.nextInt(8000).toString();
   }
+  
 
   
   secrets secret = secrets();
@@ -121,7 +123,7 @@ void dispose(){
 
   @override
   Widget build(BuildContext context) {
-    if (PlaceName == null) {
+    if (woeidquery == null) {
       return MaterialApp(
         home: Scaffold(
           body: Container(
@@ -181,8 +183,7 @@ void dispose(){
                                 image: DecorationImage(
                                     image: text.data != null
                                         ? CachedNetworkImageProvider(text.data)
-                                        : CachedNetworkImageProvider(
-                                            'http://www.allwhitebackground.com/images/2/2270.jpg'),
+                                        : AssetImage('assets/images/hashtag.png'),
                                     fit: BoxFit.cover)),
                             child: Container(
                               decoration: BoxDecoration(
@@ -213,11 +214,12 @@ void dispose(){
                                   },
                                   child: Icon(Icons.share),
                                 ),
-                                subtitle: trenddata[index]['tweet_volume'] !=
-                                        null
-                                    ? Text(
-                                        "${trenddata[index]['tweet_volume']}")
-                                    : Text(genRandom()),
+                                subtitle: trenddata[index]
+                                                  ['tweet_volume'] !=
+                                              null
+                                          ? Text( NumberFormat.compact().format(trenddata[index]['tweet_volume'])+" Tweets"
+                                              )
+                                          : Text(genRandom()+" Tweets"),
                                 onTap: () {
                                   Navigator.of(context).push(MaterialPageRoute(
                                     builder: (BuildContext context) => TrendTweets(
@@ -234,6 +236,7 @@ void dispose(){
                           "${trenddata[index]['name'].toString().replaceAll(RegExp("#"), '')}"),
                       initialData:
                           'http://www.allwhitebackground.com/images/2/2270.jpg',
+
                     );
                   },
                 ),
@@ -313,34 +316,7 @@ void dispose(){
     }
   }
 
-  // Method to check if the trend keyword is news or not. Not using this since it makes the app very slow.
-  Future<bool> isNews(String trendTerm) async {
-    // debugPrint(trendTerm);
-    String NewsUrl = "https://newsapi.org/v2/everything?q=$trendTerm&apiKey=" +
-        secrets().NEWS_API_KEY;
-    var response = await http.get(NewsUrl);
-    Map NewsData = json.decode(response.body) as Map;
-    //debugPrint(NewsData['totalResults'].toString());
-    if (NewsData['totalResults'] < 3) {
-      return false;
-    } else {
-      return true;
-    }
-  }
 
-  //Method to make a new trend list after isNews()
-  void tryonr() async {
-    //debugPrint(trenddata.toString());
-    for (int i = 0; i < trenddata.length; i++) {
-      // debugPrint(trenddata[i]['name'].toString());
-      var ifright = await isNews(
-          trenddata[i]['name'].toString().replaceAll(RegExp("#"), ''));
-
-      if (ifright == false) {
-        trenddata.removeAt(i);
-      }
-    }
-  }
 }
 
 Future<String> getImage(String imageTerm) async {
@@ -351,13 +327,18 @@ Future<String> getImage(String imageTerm) async {
       });
   Map data = json.decode(response.body) as Map;
   List value = data['value'];
-  String image = value[0]['contentUrl'];
-  String defa = 'http://www.allwhitebackground.com/images/2/2270.jpg';
-  if (value.isEmpty) {
-    return defa;
-  } else {
-    return image;
+  String image = value[genRamdom2()]['contentUrl'];
+    String defa = 'http://www.allwhitebackground.com/images/2/2270.jpg';
+    if (value.isEmpty) {
+      return defa;
+    } else {
+      return image;
+    }
   }
+  
+  int genRamdom2() {
+    var rng = new ma.Random();
+    return rng.nextInt(3);
 }
 
 
