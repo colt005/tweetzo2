@@ -1,3 +1,4 @@
+[![Codemagic build status](https://api.codemagic.io/apps/5d368a1764adf3000d11b5ce/5d368a1764adf3000d11b5cd/status_badge.svg)](https://codemagic.io/apps/5d368a1764adf3000d11b5ce/5d368a1764adf3000d11b5cd/latest_build)
 # tweetzo
 
 A new Flutter application.
