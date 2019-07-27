@@ -77,6 +77,36 @@ class UserTimelineState extends State<UserTimeline> {
 
   @override
   Widget build(BuildContext context) {
+    void _showImageFull(BuildContext context) {
+      Navigator.of(context).push(MaterialPageRoute(
+          builder: (ctx) => Scaffold(
+                body: Center(
+                  child: Hero(
+                    tag: 'my-hero-animation-tag',
+                    child: CachedNetworkImage(
+                      imageUrl: data[0]['user']['profile_image_url']
+                          .toString()
+                          .replaceAll(RegExp("_normal"), ''),
+
+                    ),
+                  ),
+                ),
+              )));
+    }void _showBanner(BuildContext context) {
+      Navigator.of(context).push(MaterialPageRoute(
+          builder: (ctx) => Scaffold(
+                body: Center(
+                  child: Hero(
+                    tag: 'my-banner',
+                    child: CachedNetworkImage(
+                      imageUrl: widget.banner,
+
+                    ),
+                  ),
+                ),
+              )));
+    }
+
     if (data != null) {
       return WillPopScope(
         child: Scaffold(
@@ -86,7 +116,8 @@ class UserTimelineState extends State<UserTimeline> {
             child: CustomScrollView(
               slivers: <Widget>[
                 SliverAppBar(
-                  iconTheme: IconThemeData(color: Theme.of(context).primaryColor),
+                  iconTheme:
+                      IconThemeData(color: Theme.of(context).primaryColor),
                   backgroundColor: Theme.of(context).canvasColor,
                   expandedHeight: 280,
                   floating: false,
@@ -96,16 +127,21 @@ class UserTimelineState extends State<UserTimeline> {
                   flexibleSpace: FlexibleSpaceBar(
                     background: Stack(
                       children: <Widget>[
-                        Container(
-                          width: double.infinity,
-                          height: 180,
-                          decoration: BoxDecoration(
-                              image: DecorationImage(
-                                  image: widget.banner != null
-                                      ? NetworkImage(widget.banner)
-                                      : NetworkImage(
-                                          'http://www.allwhitebackground.com/images/2/2270.jpg'),
-                                  fit: BoxFit.cover)),
+                        GestureDetector(
+                          onTap: ()=> _showBanner(context),
+                                                  child: Hero(
+                    child: Container(
+                                               width: double.infinity,
+                              height: 180,
+                              decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                      image: widget.banner != null
+                                          ? NetworkImage(widget.banner)
+                                          : NetworkImage(
+                                              'http://www.allwhitebackground.com/images/2/2270.jpg'),
+                                      fit: BoxFit.cover)),
+                            ), tag: 'my-banner',
+                          ),
                         ),
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -129,19 +165,31 @@ class UserTimelineState extends State<UserTimeline> {
                                         color: Theme.of(context).canvasColor),
                                     child: Padding(
                                       padding: EdgeInsets.all(3.0),
-                                      child: DecoratedBox(
-                                        decoration: ShapeDecoration(
-                                            shape: CircleBorder(),
-                                            color:
-                                                Theme.of(context).canvasColor,
-                                            image: DecorationImage(
-                                                image: widget.profpic != null
-                                                    ? NetworkImage(
-                                                        data[0]
-                                          ['user']['profile_image_url'].toString().replaceAll(RegExp("_normal"), ''))
-                                                    : NetworkImage(
-                                                        'http://www.allwhitebackground.com/images/2/2270.jpg'),
-                                                fit: BoxFit.cover)),
+                                      child: GestureDetector(
+                                        onTap: () => _showImageFull(context),
+                                        child: Hero(
+                                          child: DecoratedBox(
+                                            decoration: ShapeDecoration(
+                                                shape: CircleBorder(),
+                                                color: Theme.of(context)
+                                                    .canvasColor,
+                                                image: DecorationImage(
+                                                    image: widget.profpic !=
+                                                            null
+                                                        ? NetworkImage(data[0]
+                                                                    ['user'][
+                                                                'profile_image_url']
+                                                            .toString()
+                                                            .replaceAll(
+                                                                RegExp(
+                                                                    "_normal"),
+                                                                ''))
+                                                        : NetworkImage(
+                                                            'http://www.allwhitebackground.com/images/2/2270.jpg'),
+                                                    fit: BoxFit.cover)),
+                                          ),
+                                          tag: 'my-hero-animation-tag',
+                                        ),
                                       ),
                                     ),
                                   ),
@@ -157,7 +205,12 @@ class UserTimelineState extends State<UserTimeline> {
                                 ),
                                 Padding(
                                   padding: EdgeInsets.only(left: 8.0),
-                                  child: data[0]['user']['verified'] == true ? Icon(Icons.verified_user,color: Colors.blueAccent,): Text(""),
+                                  child: data[0]['user']['verified'] == true
+                                      ? Icon(
+                                          Icons.verified_user,
+                                          color: Colors.blueAccent,
+                                        )
+                                      : Text(""),
                                 )
                               ],
                             ),
@@ -223,9 +276,8 @@ class UserTimelineState extends State<UserTimeline> {
                     centerTitle: true,
                   ),
                 ),
-                SliverList(delegate: SliverChildBuilderDelegate(
-                  
-                  
+                SliverList(
+                    delegate: SliverChildBuilderDelegate(
                   (BuildContext context, int index) {
                     return Card(
                       elevation: 3.0,
@@ -242,7 +294,9 @@ class UserTimelineState extends State<UserTimeline> {
                                     padding: const EdgeInsets.all(8.0),
                                     child: CircleAvatar(
                                       backgroundImage: NetworkImage(data[index]
-                                          ['user']['profile_image_url'].toString().replaceAll(RegExp("_normal"), '')),
+                                              ['user']['profile_image_url']
+                                          .toString()
+                                          .replaceAll(RegExp("_normal"), '')),
                                     )),
                                 Expanded(
                                   child: Column(
@@ -311,11 +365,12 @@ class UserTimelineState extends State<UserTimeline> {
                                           text: data[index]['full_text'],
                                           style: TextStyle(fontSize: 18.0),
                                           onOpen: (link) {
-                                             Navigator.of(context).push(
-                                          MaterialPageRoute(
-                                            builder: (BuildContext context) =>WebPage(url: link.url)
-                                          )
-                                        );
+                                            Navigator.of(context).push(
+                                                MaterialPageRoute(
+                                                    builder: (BuildContext
+                                                            context) =>
+                                                        WebPage(
+                                                            url: link.url)));
                                           },
                                         ),
                                       ),
@@ -401,7 +456,7 @@ class UserTimelineState extends State<UserTimeline> {
                       ),
                     );
                   },
-                  childCount : data.length,
+                  childCount: data.length,
                 )),
               ],
             ),
