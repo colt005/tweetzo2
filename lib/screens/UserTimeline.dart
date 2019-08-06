@@ -87,12 +87,13 @@ class UserTimelineState extends State<UserTimeline> {
                       imageUrl: data[0]['user']['profile_image_url']
                           .toString()
                           .replaceAll(RegExp("_normal"), ''),
-
                     ),
                   ),
                 ),
               )));
-    }void _showBanner(BuildContext context) {
+    }
+
+    void _showBanner(BuildContext context) {
       Navigator.of(context).push(MaterialPageRoute(
           builder: (ctx) => Scaffold(
                 body: Center(
@@ -100,7 +101,6 @@ class UserTimelineState extends State<UserTimeline> {
                     tag: 'my-banner',
                     child: CachedNetworkImage(
                       imageUrl: widget.banner,
-
                     ),
                   ),
                 ),
@@ -128,10 +128,10 @@ class UserTimelineState extends State<UserTimeline> {
                     background: Stack(
                       children: <Widget>[
                         GestureDetector(
-                          onTap: ()=> _showBanner(context),
-                                                  child: Hero(
-                    child: Container(
-                                               width: double.infinity,
+                          onTap: () => _showBanner(context),
+                          child: Hero(
+                            child: Container(
+                              width: double.infinity,
                               height: 180,
                               decoration: BoxDecoration(
                                   image: DecorationImage(
@@ -140,7 +140,8 @@ class UserTimelineState extends State<UserTimeline> {
                                           : NetworkImage(
                                               'http://www.allwhitebackground.com/images/2/2270.jpg'),
                                       fit: BoxFit.cover)),
-                            ), tag: 'my-banner',
+                            ),
+                            tag: 'my-banner',
                           ),
                         ),
                         Column(

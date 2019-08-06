@@ -32,7 +32,7 @@ class _WebPageState extends State<WebPage> {
     }else{
       return Container(
       child: WebviewScaffold(
-        initialChild: Center(child: CircularProgressIndicator(),),
+        initialChild: Center(child: LinearProgressIndicator(),),
         url: "${widget.url}",
         resizeToAvoidBottomInset: true,
         withZoom: true,

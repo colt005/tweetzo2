@@ -6,12 +6,13 @@ import 'screens/TweetPage.dart';
 import 'package:android_intent/android_intent.dart';
 import 'package:splashscreen/splashscreen.dart';
 import 'screens/HomePage.dart' as hp;
-
+import 'package:flippo_navigation/flippo_navigation.dart';
 
 void main() {
-  
-  runApp(MaterialApp(home: Splaash(),
-  debugShowCheckedModeBanner: false,));
+  runApp(MaterialApp(
+    home: Splaash(),
+    debugShowCheckedModeBanner: false,
+  ));
 }
 
 class Splaash extends StatefulWidget {
@@ -22,18 +23,17 @@ class Splaash extends StatefulWidget {
 class _SplaashState extends State<Splaash> {
   @override
   Widget build(BuildContext context) {
-    return SplashScreen(seconds: 3,
-    navigateAfterSeconds: Tabs(),
-    title: Text("Tweetzo",style: TextStyle(
-    color: Colors.white,
-    fontSize: 28.0
-    ),),
-    image: Image.asset('assets/images/hashtag.png'),
-    backgroundColor: Colors.lightBlue,
-    photoSize: 80.0,
-    loaderColor: Colors.white,
-    
-      
+    return SplashScreen(
+      seconds: 3,
+      navigateAfterSeconds: Tabs(),
+      title: Text(
+        "Tweetzo",
+        style: TextStyle(color: Colors.white, fontSize: 28.0),
+      ),
+      image: Image.asset('assets/images/hashtag.png'),
+      backgroundColor: Colors.lightBlue,
+      photoSize: 80.0,
+      loaderColor: Colors.white,
     );
   }
 }
@@ -54,12 +54,9 @@ class TabsState extends State<Tabs> with SingleTickerProviderStateMixin {
   void initState() {
     super.initState();
     controller = new TabController(vsync: this, length: 2);
-    
+
     _checkGps();
-    
-    
   }
-  
 
   @override
   void dispose() {
@@ -69,25 +66,95 @@ class TabsState extends State<Tabs> with SingleTickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    
-    
-    
-    
     return MaterialApp(
-      
-      theme: darkThemeEnabled ? ThemeData(
-        brightness: Brightness.dark,
-        
-          accentColor: Colors.black54
-        
-      ) : ThemeData(
-          brightness: Brightness.light,
-          
-          primaryColor: Colors.blueAccent,
-        accentColor: Colors.white54
-      ),
-      
+      theme: darkThemeEnabled
+          ? ThemeData(brightness: Brightness.dark, accentColor: Colors.black54)
+          : ThemeData(
+              brightness: Brightness.light,
+              primaryColor: Colors.blueAccent,
+              accentColor: Colors.white54),
       home: Scaffold(
+        drawer: ClipRRect(
+          borderRadius: BorderRadius.circular(10.0),
+          child: Drawer(
+            child: ListView(
+              padding: EdgeInsets.zero,
+              children: <Widget>[
+                Column(
+                  children: <Widget>[
+                    Padding(
+                      padding: EdgeInsets.all(50.0),
+                    ),
+                    Image.asset(
+                      'assets/images/hashtag.png',
+                      height: 120.0,
+                      width: 120.0,
+                    ),
+                  ],
+                ),
+                Padding(
+                  padding: EdgeInsets.all(25.0),
+                ),
+                Center(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      FlatButton(
+                        child: Text(
+                          "Top Headlines",
+                          style: TextStyle(
+                            fontSize: 20.0,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        onPressed: () {},
+                      )
+                    ],
+                  ),
+                ),
+                Center(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      FlatButton(
+                        child: Text(
+                          "Categories",
+                          style: TextStyle(
+                            fontSize: 20.0,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        onPressed: () {},
+                      ),
+                    ],
+                  ),
+                ),
+
+               Divider(),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  
+                  children: <Widget>[
+                    Text(
+                          "Dark Theme",
+                          style: TextStyle(
+                            fontSize: 15.0,
+                            fontWeight: FontWeight.w500,
+                          ),),
+                          Padding(padding: EdgeInsets.all(15.0),),
+                    Switch(
+                        value: darkThemeEnabled,
+                        onChanged: (changedTheme) {
+                          setState(() {
+                            darkThemeEnabled = changedTheme;
+                          });
+                        }),
+                  ],
+                )
+              ],
+            ),
+          ),
+        ),
         appBar: AppBar(
           title: GestureDetector(
               onTap: () {
@@ -97,26 +164,12 @@ class TabsState extends State<Tabs> with SingleTickerProviderStateMixin {
                   });
                 } else if (darkThemeEnabled == true) {
                   setState(() {
-                    
                     darkThemeEnabled = false;
                   });
                 }
               },
               child: Text('Tweetzo')),
-          actions: <Widget>[
-            Row(
-              children: <Widget>[
-                Text("Dark Theme"),
-                Switch(
-                    value: darkThemeEnabled,
-                    onChanged: (changedTheme) {
-                      setState(() {
-                        darkThemeEnabled = changedTheme;
-                      });
-                    }),
-              ],
-            )
-          ],
+          
           bottom: TabBar(
             controller: controller,
             tabs: <Tab>[
@@ -134,6 +187,7 @@ class TabsState extends State<Tabs> with SingleTickerProviderStateMixin {
       ),
     );
   }
+
   Future _checkGps() async {
     if (!(await Geolocator().isLocationServiceEnabled())) {
       if (Theme.of(context).platform == TargetPlatform.android) {
