@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' as prefix0;
 import 'package:geolocator/geolocator.dart';
+import 'package:tweetzo/NewsApi%20Screens/TopHeadlines.dart';
 import 'package:tweetzo/screens/HomePage2.dart';
 import 'screens/HomePage.dart';
 import 'screens/TweetPage.dart';
 import 'package:android_intent/android_intent.dart';
 import 'package:splashscreen/splashscreen.dart';
 import 'screens/HomePage.dart' as hp;
-import 'package:flippo_navigation/flippo_navigation.dart';
 
 void main() {
   runApp(MaterialApp(
@@ -107,7 +108,12 @@ class TabsState extends State<Tabs> with SingleTickerProviderStateMixin {
                             fontWeight: FontWeight.w500,
                           ),
                         ),
-                        onPressed: () {},
+                        onPressed: () {
+                          
+                          Navigator.of(context).push(MaterialPageRoute(
+                            builder: (BuildContext context) => TopHeadlines(),
+                          ));
+                        },
                       )
                     ],
                   ),
@@ -124,24 +130,27 @@ class TabsState extends State<Tabs> with SingleTickerProviderStateMixin {
                             fontWeight: FontWeight.w500,
                           ),
                         ),
-                        onPressed: () {},
+                        onPressed: () {
+                          
+                        },
                       ),
                     ],
                   ),
                 ),
-
-               Divider(),
+                Divider(),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  
                   children: <Widget>[
                     Text(
-                          "Dark Theme",
-                          style: TextStyle(
-                            fontSize: 15.0,
-                            fontWeight: FontWeight.w500,
-                          ),),
-                          Padding(padding: EdgeInsets.all(15.0),),
+                      "Dark Theme",
+                      style: TextStyle(
+                        fontSize: 15.0,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.all(15.0),
+                    ),
                     Switch(
                         value: darkThemeEnabled,
                         onChanged: (changedTheme) {
@@ -169,7 +178,6 @@ class TabsState extends State<Tabs> with SingleTickerProviderStateMixin {
                 }
               },
               child: Text('Tweetzo')),
-          
           bottom: TabBar(
             controller: controller,
             tabs: <Tab>[
