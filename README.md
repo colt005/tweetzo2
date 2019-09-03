@@ -4,7 +4,7 @@
 
 # Tweetzo
 
-An application to read and check news from Twitter news and verified accounts. It uses the Twitter API to fetch tweets and trends and also the News API to fetch and display News.
+An application to read and check news from Twitter verified accounts. It uses the Twitter API to fetch tweets and trends and also the News API to fetch and display News.
 
 ## Getting Started
 
