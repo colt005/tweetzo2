@@ -257,8 +257,8 @@ class _HomePage2State extends State<HomePage2> {
 
   //Method to get location of the user using Geolocator
   void getLocation() async {
-    Position position = await Geolocator()
-        .getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+    Position position = await getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+
     //debugPrint(position.toString());
     userLongitude = position.longitude.toString();
     userLattitude = position.latitude.toString();

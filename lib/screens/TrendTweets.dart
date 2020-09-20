@@ -43,8 +43,8 @@ class TrendTweetsState extends State<TrendTweets> {
   }
 
   void getLocation() async {
-    Position position = await Geolocator()
-        .getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+ Position position = await getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+
     debugPrint(position.toString());
     userLongitude = position.longitude.toString();
     userLattitude = position.latitude.toString();

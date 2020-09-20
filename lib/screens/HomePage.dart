@@ -2106,8 +2106,8 @@ void dispose(){
 
   //Method to get location of the user using Geolocator
   void getLocation() async {
-    Position position = await Geolocator()
-        .getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+   Position position = await getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+
     //debugPrint(position.toString());
     userLongitude = position.longitude.toString();
     userLattitude = position.latitude.toString();
@@ -2179,9 +2179,9 @@ Future<String> getImage(String imageTerm) async {
       });
   Map data = json.decode(response.body) as Map;
   List value = data['value'];
-  String image = value[genRamdom2()]['contentUrl'];
+  String image = (value == null || value.isEmpty) ?'http://www.allwhitebackground.com/images/2/2270.jpg' : value[genRamdom2()]['contentUrl'];
     String defa = 'http://www.allwhitebackground.com/images/2/2270.jpg';
-    if (value.isEmpty) {
+    if (value == null || value.isEmpty) {
       return defa;
     } else {
       return image;

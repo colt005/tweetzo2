@@ -23,20 +23,20 @@ dependencies:
     git:
       url: git://github.com/sh4869/oauth.dart.git
       ref: develop
-  twitter: ^1.0.0
-  flutter_linkify: any
-  flutter_webview_plugin: any
-  geolocator: ^4.0.3
-  flutter_share_me: ^0.2.1
-  liquid_pull_to_refresh: ^1.1.1
-  cached_network_image: ^1.0.0
-  url_launcher: any
-  font_awesome_flutter: ^8.4.0
-  android_intent: ^0.3.1+1
+  twitter: 
+  flutter_linkify: 
+  flutter_webview_plugin: 
+  geolocator: 
+  flutter_share_me: 
+  liquid_pull_to_refresh: 
+  cached_network_image: 
+  url_launcher: 
+  font_awesome_flutter: 
+  android_intent: 
   splashscreen:
   intl:
-  dropdownfield: ^0.0.2
-  timeago: ^2.0.18
+  dropdownfield: 
+  timeago:
   
 
   # The following adds the Cupertino Icons font to your application.

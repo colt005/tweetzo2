@@ -49,8 +49,8 @@ class TweetPageState extends State<TweetPage> {
   }
 
   void getLocation() async {
-    Position position = await Geolocator()
-        .getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+  Position position = await getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+
     debugPrint(position.toString());
     userLongitude = position.longitude.toString();
     userLattitude = position.latitude.toString();
@@ -263,7 +263,8 @@ class TweetPageState extends State<TweetPage> {
                                   padding:
                                       const EdgeInsets.symmetric(vertical: 4.0),
                                   child: Linkify(
-                                    humanize: true,
+                                 
+                                   // humanize: true,
                                     text: tweetStatus[index]['full_text'],
                                     style: TextStyle(fontSize: 18.0),
                                     onOpen: (link) {

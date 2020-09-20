@@ -68,6 +68,7 @@ class TabsState extends State<Tabs> with SingleTickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       theme: darkThemeEnabled
           ? ThemeData(brightness: Brightness.dark, accentColor: Colors.black54)
           : ThemeData(
@@ -197,7 +198,7 @@ class TabsState extends State<Tabs> with SingleTickerProviderStateMixin {
   }
 
   Future _checkGps() async {
-    if (!(await Geolocator().isLocationServiceEnabled())) {
+    if (!(await isLocationServiceEnabled())) {
       if (Theme.of(context).platform == TargetPlatform.android) {
         showDialog(
           context: context,
